@@ -36,6 +36,8 @@ void ServoEaser::begin(Servo s, int frameTime,
     easingFunc = ServoEaser_easeInOutCubic;
     arrivedFunc = NULL;
 
+    useMicros = false;
+
     reset();
 }
 
@@ -48,6 +50,8 @@ void ServoEaser::begin(Servo s, int frameTime, int pos )
 
     easingFunc = ServoEaser_easeInOutCubic;
     arrivedFunc = NULL;
+
+    useMicros = false;
 
     reset();
 }
@@ -70,7 +74,7 @@ void ServoEaser::reset()
     running = true;
 }
 
-//
+// 
 void ServoEaser::setEasingFunc( EasingFunc func )
 {
     easingFunc = func;
@@ -139,9 +143,45 @@ void ServoEaser::update()
     if( tick == tickCount ) { // time for new position
         getNextPos(); 
     }
-    servo.write( currPos );
+    if( useMicros ) {
+        servo.writeMicroseconds( angleToMicros(currPos) );
+    } else {
+        servo.write( currPos );
+    }
 }
 
+//
+void ServoEaser::setMinMaxMicroseconds(int mi, int ma)
+{
+    min = mi;
+    max = ma;
+}
+
+// from Servo.cpp
+#define SERVO_MIN() (MIN_PULSE_WIDTH - this->min * 4)  // min value in uS 
+#define SERVO_MAX() (MAX_PULSE_WIDTH - this->max * 4)  // max value in uS
+
+#define in_min 0
+#define in_max 180
+#define out_min SERVO_MIN()
+#define out_max SERVO_MAX()
+int ServoEaser::angleToMicros(float angle)
+{
+    //                 x   in_min,in_max, out_min, out_max
+    //int value = map(value, 0, 180, SERVO_MIN(),  SERVO_MAX());
+    return (angle-in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}
+
+//
+void ServoEaser::useMicroSeconds(boolean t)
+{
+    useMicros = t;
+}
+//
+boolean ServoEaser::usingMicroSeconds()
+{
+    return useMicros;
+}
 //
 void ServoEaser::start()
 {

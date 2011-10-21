@@ -46,10 +46,10 @@ class ServoEaser
 private:
     Servo servo;
     int frameMillis; // minimum update time between servo moves
-    int startPos;    // where servo started its tween
-    int currPos;     // current servo position, best of our knowledge
+    float startPos;    // where servo started its tween
+    float currPos;     // current servo position, best of our knowledge
 
-    int changePos;   // from servoMove list
+    float changePos;   // from servoMove list
 
     int durMillis;   // from servoMove list
     int tick;        // count of easing moves within move duration 
@@ -66,8 +66,14 @@ private:
     
     boolean running;  // is servo easer running?
     boolean arrived;  // has servo arrived at its destination
+    boolean useMicros;// do math using float angles and microseconds 
 
     void getNextPos();
+    int angleToMicros(float angle);
+
+    // duplicate Servo min/max micros functionality
+    int8_t min;   // minimum is this value times 4 added to MIN_PULSE_WIDTH    
+    int8_t max;  // maximum is this value times 4 added to MAX_PULSE_WIDTH   
 
 public:
     
@@ -76,6 +82,12 @@ public:
 
     void reset();
     void setMovesList( ServoMove* mlist, int mcount );
+
+    // mirrors of Servos min/max values, set these if you need differnt
+    // min/max microsecond bounds  (unfortunately, we can't get at 
+    // Servo's values for these.  These values are only used if
+    // you enable "useMicroseconds()"
+    void setMinMaxMicroseconds( int min, int max );
 
     void start();
     void stop();
@@ -93,6 +105,10 @@ public:
     boolean hasArrived();
     // is the servo running (start/stop flag)
     boolean isRunning();
+
+    void useMicroSeconds(boolean t);
+
+    boolean usingMicroSeconds();
 
 };
 

@@ -23,14 +23,14 @@ ServoEaser servoEaser;
 int myServoMovesCount = 8;
 ServoMove myServoMoves[] = {
 // angle, duration
-  {  0, 2000},
-  {180, 2000},
-  {  0, 1500},
-  {180, 1500},
-  { 90,  800},
-  {180, 2000},
-  { 45, 3000},
+  { 10, 5000},
+  {170, 5000},
+  { 10, 1300},
+  {170, 1300},
+  { 90, 2000},
   {135, 3000},
+  { 45, 3000},
+  {135, 1000},
 };
 
 
@@ -58,6 +58,11 @@ void setup()
   servoEaser.begin( servo1, servoFrameMillis, 0 );
   // and then set moves list later (or not at all)
   servoEaser.setMovesList( myServoMoves, myServoMovesCount );
+
+  // enable this to make for smoother motion
+  // note you might also need to "setMinMaxMicroseconds(min,max)" to match
+  // the same way you set up your servo
+  //servoEaser.useMicroSeconds(true);
 
   // ServoEaser defaults to easeInOutCubic() but you can change it
   //servoEaser.setEasingFunc( linearTween );
