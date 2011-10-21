@@ -30,6 +30,8 @@ void setup()
 
   servoEaser.begin( servo1, servoFrameMillis, 0 );
 
+  servoEaser.useMicroSeconds( true );
+
   Serial.println("ServoEaserTest1 ready");
 
   // can do manual easing instead of a moves list
@@ -42,9 +44,15 @@ void loop()
 {
   servoEaser.update();
 
-  if( (millis() - lastMillis) > 5000 ) {
+  if( servoEaser.hasArrived() ) {
     lastMillis = millis();
-    servoEaser.easeTo( random(180), random(400,3000) );
+    int angle = random(180);
+    int duration = random(200,15000);
+    Serial.print("easing to angle:");
+    Serial.print(angle);
+    Serial.print("\t duration:");
+    Serial.println(duration);
+    servoEaser.easeTo( angle, duration );
   }
 }
 
