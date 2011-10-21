@@ -5,3 +5,6 @@ ServoEaser library for Arduino
 ServoEaser is an Arduino library makes doing animation-style movements with
 servos easier.
 
+
+Works with both new Arduino 1.0 and Arduino 0022.
+

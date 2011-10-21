@@ -14,10 +14,15 @@
 #ifndef ServoEaser_h
 #define ServoEaser_h
 
-#include "WProgram.h"
+#if (ARDUINO >= 100)
+#include <Arduino.h>
+#else
+#include <WProgram.h>
+#endif
 
 #include <Servo.h>
 
+// simple struct to encapsulate a servo move 
 typedef struct _servoMove {
     int pos;   // position of servo in degrees
     int dur;   // duration in milliseconds to get to and stay at that position
@@ -34,6 +39,7 @@ typedef float (*EasingFunc)(float t, float b, float c, float d);
 // define "ArrivedFunc" to be called when servo arrives at position
 // arguments provided are: currPos of servo & movesIndex of move list (if appl)
 typedef void (*ArrivedFunc)(int currPos, int movesIndex);
+
 
 class ServoEaser 
 {
@@ -83,7 +89,9 @@ public:
     // can optionally set a function to call when servo arrives at dest
     void setArrivedFunc( ArrivedFunc func );
 
+    // has servo arrived at its commaned move point?
     boolean hasArrived();
+    // is the servo running (start/stop flag)
     boolean isRunning();
 
 };
