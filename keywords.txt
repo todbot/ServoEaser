@@ -15,13 +15,19 @@ ServoEaser KEYWORD1
 
 begin KEYWORD2
 reset KEYWORD2
-setEasingFunc KEYWORD2
-setMovesList KEYWORD2
+setMinMaxMicroseconds KEYWORD2
+play KEYWORD2
 getNextPos KEYWORD2
 easeTo KEYWORD2
 update KEYWORD2
 start KEYWORD2
 stop KEYWORD2
+setEasingFunc KEYWORD2
+setArrivedFunc KEYWORD2
+hasArrived KEYWORD2
+isRunning KEYWORD2
+useMicroseconds KEYWORD2
+usingMicroseconds KEYWORD2
 
 #
 #######################################
