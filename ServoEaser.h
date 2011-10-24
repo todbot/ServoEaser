@@ -56,10 +56,10 @@ private:
     int tickCount;   // number of frames between start & end pos
     unsigned long lastMillis; // time time we did something
 
-    int movesIndex;  // where in the moves list we are
-    int movesCount;  // number of moves in the moves list
-
     ServoMove* moves; // list of user-supplied servo moves
+    int movesIndex;   // where in the moves list we are
+    int movesCount;   // number of moves in the moves list
+    int movesReps;    // number of repeats, 0==forever
 
     EasingFunc easingFunc; // func that describes tween motion
     ArrivedFunc arrivedFunc; // func to call when servo arrives at dest
@@ -81,7 +81,8 @@ public:
     void begin(Servo s, int frameTime, int startPos);
 
     void reset();
-    void setMovesList( ServoMove* mlist, int mcount );
+    void play( ServoMove* list, int mcount);
+    void play( ServoMove* list, int mcount, int mreps);
 
     // mirrors of Servos min/max values, set these if you need differnt
     // min/max microsecond bounds  (unfortunately, we can't get at 

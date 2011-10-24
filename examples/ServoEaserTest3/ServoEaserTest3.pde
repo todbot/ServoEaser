@@ -1,5 +1,5 @@
 //
-// ServoEasingTest1.pde -- showing use of ServoEaser callbak functions
+// ServoEasingTest3.pde -- showing use of ServoEaser callbak functions
 //
 //
 // 2011, TeamPneumo, Tod E. Kurt, http://todbot.com/blog/
@@ -12,20 +12,19 @@
 const int ledPin   = 13; 
 const int servoPin = 7;
 
+int servoFrameMillis = 20;  // minimum time between servo updates
+
 Servo servo1; 
-
-int servoFrameMillis = 10;  // minimum time between servo updates
-
 ServoEaser servoEaser;
 
-
-// configurable list of servo moves
 int myServoMovesCount = 2;
 ServoMove myServoMoves[] = {
 // angle, duration
   { 45, 2000},
   {135, 2000},
 };
+
+
 
 // from Easing::linearTween()
 float linearTween (float t, float b, float c, float d) {
@@ -65,12 +64,13 @@ float easeOutBounce (float t, float b, float c, float d) {
 }
 
 
-EasingFunc easingFuncs[] = { linearTween, 
-                             easeInOutCubic, 
-                             easeInOutQuad, 
-                             easeInOutQuart, 
-                             easeInOutQuint, 
-                             easeOutBounce, 
+EasingFunc easingFuncs[] = { 
+    linearTween, 
+    easeInOutCubic, 
+    easeInOutQuad, 
+    easeInOutQuart, 
+    easeInOutQuint, 
+    easeOutBounce, 
 };
 int easingFuncCount = 6;
 
@@ -97,22 +97,21 @@ void myArrivedFunc( int currPos, int movesIndex )
 void setup()
 {
   Serial.begin(19200);
+  Serial.println("ServoEaserTest3");
 
   servo1.attach( servoPin );
+  servoEaser.begin( servo1, servoFrameMillis, 90);
 
-  servoEaser.begin( servo1, servoFrameMillis, myServoMoves, myServoMovesCount);
+  servoEaser.useMicroSeconds(true);
+
   servoEaser.setArrivedFunc( myArrivedFunc );
-
-  Serial.println("ServoEaserTest3 ready");
-
+  servoEaser.play( myServoMoves, myServoMovesCount );
 }
 
 //
 void loop()
 {
-
   servoEaser.update();
-
 }
 
 

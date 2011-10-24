@@ -10,29 +10,42 @@
 #include "ServoEaser.h"
 
 const int ledPin   = 13; 
-const int servoPin = 7;
+const int servoPin  = 7;
+const int buttonPin = 2;
+
+int servoFrameMillis = 20;  // minimum time between servo updates
 
 Servo servo1; 
-
-int servoFrameMillis = 10;  // minimum time between servo updates
-
 ServoEaser servoEaser;
+
+int myServoMovesCount = 8;
+// configurable list of servo moves
+ServoMove myServoMoves[] = {
+// angle, duration
+    {90,   800},
+    {10,  1501},
+    {45,   502},
+    {20,   503},
+    {135, 1000},
+    {75,  1000},
+    {105, 1000},
+    {0,   3000},
+};
 
 
 //
 void setup()
 {
   Serial.begin(19200);
+  Serial.println("ServoEasingTest4");
+
+  pinMode( buttonPin, INPUT);
+  digitalWrite( buttonPin, HIGH); // turn on internal pullup resistor
 
   servo1.attach( servoPin );
+  servoEaser.begin( servo1, servoFrameMillis, 2 );
 
-  // begin with just a framerate and starting position (0 degrees)
-  servoEaser.begin( servo1, servoFrameMillis, 0 );
-
-  Serial.println("ServoEasingTest0 ready");
-
-  // can do manual easing, from 0 to 180 in 3 seconds
-  servoEaser.easeTo( 180, 3000);
+  Serial.println("waiting for button press.");
 }
 
 //
@@ -40,12 +53,14 @@ void loop()
 {
   servoEaser.update();
 
-  if( servoEaser.hasArrived() ) { 
-      Serial.println("ServoEaser arrived at 180 degrees,");
-      Serial.println("going to 90 in 5 seconds");
-      servoEaser.easeTo( 90, 5000 );
+  // on button press, play moves once
+  if( digitalRead(buttonPin) == LOW   // button press
+      //&& !servoEaser.isRunning()   // to trigger only if not running
+      ) {
+      Serial.println("playing servo moves...");
+      servoEaser.play( myServoMoves, myServoMovesCount, 1 );
   }
-    
+
 }
 
 

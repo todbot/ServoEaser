@@ -12,12 +12,10 @@
 const int ledPin   = 13; 
 const int servoPin = 7;
 
-Servo servo1; 
-
 int servoFrameMillis = 10;  // minimum time between servo updates
 
+Servo servo1; 
 ServoEaser servoEaser;
-
 
 unsigned long lastMillis;
 
@@ -25,18 +23,17 @@ unsigned long lastMillis;
 void setup()
 {
   Serial.begin(19200);
+  Serial.println("ServoEaserTest1");
 
   servo1.attach( servoPin );
 
   servoEaser.begin( servo1, servoFrameMillis, 0 );
-
-  servoEaser.useMicroSeconds( true );
-
-  Serial.println("ServoEaserTest1 ready");
+  servoEaser.useMicroSeconds( true );  // fine-control mode
 
   // can do manual easing instead of a moves list
   //                angle, duration 
   servoEaser.easeTo( 180, 5000);
+
 }
 
 //
@@ -46,7 +43,7 @@ void loop()
 
   if( servoEaser.hasArrived() ) {
     lastMillis = millis();
-    int angle = random(180);
+    int angle    = random(180);
     int duration = random(200,15000);
     Serial.print("easing to angle:");
     Serial.print(angle);

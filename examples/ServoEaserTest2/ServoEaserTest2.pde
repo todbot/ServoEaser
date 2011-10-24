@@ -8,89 +8,58 @@
 
 #include <Servo.h>
 #include "ServoEaser.h"
-//#include <Easing.h>
 
 const int ledPin   = 13; 
 const int servoPin = 7;
 
-Servo servo1; 
-
 int servoFrameMillis = 10;  // minimum time between servo updates
 
+Servo servo1; 
 ServoEaser servoEaser;
 
 // configurable list of servo moves
-int myServoMovesCount = 8;
+int myServoMovesCount = 9;
 ServoMove myServoMoves[] = {
 // angle, duration
-  { 10, 5000},
-  {170, 5000},
+  { 10, 1500},
+  {170, 1500},
   { 10, 1300},
   {170, 1300},
   { 90, 2000},
+  { 90, 2000},  // wait
   {135, 3000},
   { 45, 3000},
   {135, 1000},
 };
 
 
+// our replacement easing function
 // from Easing::linearTween()
 float linearTween (float t, float b, float c, float d) {
 	return c*t/d + b;
 }
-// from Easing::easeInOutQuart()
-float easeInOutQuart (float t, float b, float c, float d) {
-	if ((t/=d/2) < 1) return c/2*t*t*t*t + b;
-	return -c/2 * ((t-=2)*t*t*t - 2) + b;
-}
-
 
 //
 void setup()
 {
   Serial.begin(19200);
+  Serial.println("ServoEasingTest2");
 
   servo1.attach( servoPin );
+  
+  servoEaser.begin( servo1, servoFrameMillis, 90);
 
-  // can begin with a list of servo moves
-  //servoEaser.begin( servo1, servoFrameMillis,myServoMoves,myServoMovesCount);
-  // or begin with just a framerate and starting position
-  servoEaser.begin( servo1, servoFrameMillis, 0 );
-  // and then set moves list later (or not at all)
-  servoEaser.setMovesList( myServoMoves, myServoMovesCount );
+  // use my own easing function
+  servoEaser.setEasingFunc( linearTween );
 
-  // enable this to make for smoother motion
-  // note you might also need to "setMinMaxMicroseconds(min,max)" to match
-  // the same way you set up your servo
-  //servoEaser.useMicroSeconds(true);
-
-  // ServoEaser defaults to easeInOutCubic() but you can change it
-  //servoEaser.setEasingFunc( linearTween );
-  //servoEaser.setEasingFunc( easeInOutQuart );
-  // can even use Easing library if you want
-  //servoEaser.setEasingFunc( Easing::easeInOutExpo );
-
-  Serial.println("ServoEasingTest2 ready");
-
-  // can do manual easing instead of a moves list
-  //servoEaser.easeTo( 180, 5000);
+  // start playing a moves list on a particular servo
+  servoEaser.play( myServoMoves, myServoMovesCount );
 }
 
 //
 void loop()
 {
   servoEaser.update();
-
-  /*
-  // can do manual easing too
-  if( millis() > 6000 && millis() < 6005 ) { 
-    servoEaser.easeTo( 0, 3000 );
-  }
-  if( millis() > 10000 && millis() < 10005 ) {
-    servoEaser.easeTo( 45, 5000 );
-  }
-  */
-    
 }
 
 
