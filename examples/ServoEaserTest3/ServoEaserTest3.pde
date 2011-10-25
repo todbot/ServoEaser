@@ -25,7 +25,6 @@ ServoMove myServoMoves[] = {
 };
 
 
-
 // from Easing::linearTween()
 float linearTween (float t, float b, float c, float d) {
 	return c*t/d + b;

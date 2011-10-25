@@ -12,7 +12,7 @@
 const int ledPin   = 13; 
 const int servoPin = 7;
 
-int servoFrameMillis = 10;  // minimum time between servo updates
+int servoFrameMillis = 20;  // minimum time between servo updates
 
 Servo servo1; 
 ServoEaser servoEaser;

@@ -16,7 +16,8 @@
 
 #define DEBUG 0
 
-#if (DEBUG > 0 )
+// FIXME: this debug setup sucks
+#if (DEBUG > 0)
 #define debug_update() {\
         Serial.print("update: currPos:"); Serial.print(currPos);        \
         Serial.print(" startPos:"); Serial.print(startPos);             \
@@ -24,9 +25,10 @@
         Serial.print(" tick:"); Serial.print(tick);                     \
         Serial.print(" arrived:");Serial.println(((arrived)?"true":"false"));}
 #define debug_getnextpos() {                                            \
-        Serial.print("getNextPos: changePos:"); Serial.print(changePos);     \
+        Serial.print("getNextPos:"); Serial.print(movesIndex); \
+        Serial.print(" changePos:"); Serial.print(changePos);     \
         Serial.print(" moves[i].pos:"); Serial.print(moves[movesIndex].pos); \
-        Serial.print(" durMillis:"); Serial.println(durMillis);}
+        Serial.print(" durMillis:"); Serial.println(durMillis);
 #define debug_reset() {                                     \
         Serial.print("reset: currPos:"); Serial.print(currPos); \
         Serial.print(" changePos:"); Serial.println(changePos); }
@@ -40,7 +42,7 @@
 // this is from Easing::easeInOutCubic()
 // t: current time, b: beginning value, c: change in value, d: duration
 // t and d can be in frames or seconds/milliseconds
-float ServoEaser_easeInOutCubic(float t, float b, float c, float d)
+inline float ServoEaser_easeInOutCubic(float t, float b, float c, float d)
 {
     if ((t/=d/2) < 1) return c/2*t*t*t + b;
 	return c/2*((t-=2)*t*t + 2) + b;
@@ -60,11 +62,16 @@ void ServoEaser::begin(Servo s, int frameTime, int pos )
     servo = s;
     frameMillis = frameTime;
     startPos = pos;
+    flipped = false;
 
     easingFunc = ServoEaser_easeInOutCubic;
     arrivedFunc = NULL;
 
     useMicros = false;
+
+    movesIndex = 0;
+
+    //servo.write( pos );  // FIXME: maybe remove this, too jarring
 
     reset();
 }
@@ -75,9 +82,8 @@ void ServoEaser::reset()
     currPos = servo.read();
 
     startPos = currPos;  // get everyone in sync
-    changePos = 0; 
+    changePos = 0;       // might be overwritten below
 
-    movesIndex = 0;
     if( movesCount > 0 ) {
         changePos = moves[ movesIndex ].pos - startPos ;
         durMillis = moves[ movesIndex ].dur;
@@ -92,14 +98,20 @@ void ServoEaser::reset()
 //
 void ServoEaser::play( ServoMove* mlist, int mcount)
 {
-    play( mlist, mcount, 0);
+    play( mlist, mcount, 0, 0);
 }
 //
 void ServoEaser::play( ServoMove* mlist, int mcount, int mreps )
 {
+    play( moves, mcount, mreps, 0 );
+}
+
+void ServoEaser::play( ServoMove* mlist, int mcount, int mreps, int mindex)
+{
     moves = mlist;
-    movesCount = mcount;
-    movesReps = mreps;
+    movesCount = (mcount>0) ? mcount : 0;
+    movesReps  = (mreps>0)  ? mreps  : 0;
+    movesIndex = (mindex>0) ? ((mindex<mcount) ? mindex : mcount) : 0; 
 
     running = true;
 
@@ -167,10 +179,11 @@ void ServoEaser::update()
     if( tick == tickCount ) { // time for new position
         getNextPos(); 
     }
+    float p = (flipped) ? 180.0 - currPos : currPos;
     if( useMicros ) {
-        servo.writeMicroseconds( angleToMicros(currPos) );
+        servo.writeMicroseconds( angleToMicros(p) );
     } else {
-        servo.write( currPos );
+        servo.write( p );
     }
 }
 
@@ -206,6 +219,14 @@ boolean ServoEaser::usingMicroSeconds()
 {
     return useMicros;
 }
+void ServoEaser::setFlipped(boolean t)
+{
+    flipped = t;
+}
+boolean ServoEaser::isFlipped()
+{
+    return flipped;
+}
 //
 void ServoEaser::start()
 {
@@ -226,6 +247,7 @@ boolean ServoEaser::hasArrived()
 { 
     return arrived;
 }
+
 
 // 
 void ServoEaser::setEasingFunc( EasingFunc func )
