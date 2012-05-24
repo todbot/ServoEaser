@@ -1,6 +1,5 @@
 //
-// ServoEaserTest0.pde -- more complex example of using ServoEaser 
-//                        this time with move lists
+// ServoEaser4ButtonPlay.ino -- trigger a move list with a button
 //
 // 2011, TeamPneumo, Tod E. Kurt, http://todbot.com/blog/
 //
@@ -11,7 +10,7 @@
 
 const int ledPin   = 13; 
 const int servoPin  = 7;
-const int buttonPin = 2;
+const int buttonPin = 0;
 
 int servoFrameMillis = 20;  // minimum time between servo updates
 
@@ -37,10 +36,9 @@ ServoMove myServoMoves[] = {
 void setup()
 {
   Serial.begin(19200);
-  Serial.println("ServoEasingTest4");
+  Serial.println("ServoEaser4ButtonPlay");
 
-  pinMode( buttonPin, INPUT);
-  digitalWrite( buttonPin, HIGH); // turn on internal pullup resistor
+  pinMode( buttonPin, INPUT_PULLUP); // turn on internal pullup resistor
 
   servo1.attach( servoPin );
   servoEaser.begin( servo1, servoFrameMillis, 2 );
