@@ -1,5 +1,5 @@
 //
-// ServoEaser0ManualEasing.ino - show how to send 
+// ServoEaser0ManualEasing.ino - show how to send manual easing commands
 //
 // 2011, TeamPneumo, Tod E. Kurt, http://todbot.com/blog/
 //

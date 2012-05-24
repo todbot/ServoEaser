@@ -1,5 +1,5 @@
 //
-// ServoEasingTest1.pde -- simple example showing use of ServoEaser
+// ServoEaser1RandEasing.ino -- simple example showing use of ServoEaser
 //
 //
 // 2011, TeamPneumo, Tod E. Kurt, http://todbot.com/blog/
@@ -23,12 +23,12 @@ unsigned long lastMillis;
 void setup()
 {
   Serial.begin(19200);
-  Serial.println("ServoEaserTest1");
+  Serial.println("ServoEaser1RandEasing");
 
   servo1.attach( servoPin );
 
   servoEaser.begin( servo1, servoFrameMillis, 0 );
-  servoEaser.useMicroSeconds( true );  // fine-control mode
+  servoEaser.useMicroseconds( true );  // fine-control mode
 
   // can do manual easing instead of a moves list
   //                angle, duration 
