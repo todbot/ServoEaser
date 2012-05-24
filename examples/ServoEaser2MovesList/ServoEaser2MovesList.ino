@@ -1,6 +1,5 @@
 //
-// ServoEaserTest2.pde  --more complex example of using ServoEaser 
-//                        this time with move lists
+// ServoEaser2MovesList.ino -- show how to send ServoEaser a list of moves
 //
 // 2011, TeamPneumo, Tod E. Kurt, http://todbot.com/blog/
 //
@@ -26,7 +25,7 @@ ServoMove myServoMoves0[] = {
   { 10, 1300},
   {170, 1300},
   { 90, 2000},
-  { 90, 2000},  // wait
+  { 90, 2000},  // wait at 90
   {135, 3000},
   { 45, 3000},
   {135, 1000},
@@ -43,6 +42,8 @@ ServoMove myServoMoves1[] = {
   { 70,  1000},
   { 110, 1000},
 };
+
+// pick which list you want here
 int myServoMovesCount = myServoMovesCount1;
 ServoMove* myServoMoves = myServoMoves1;
 
@@ -58,8 +59,7 @@ void setup()
   Serial.begin(19200);
   Serial.println("ServoEasingTest2");
 
-
-  //servo1.attach( servoPin );
+  // give pin, and min,max microseconds
   servo1.attach( servoPin, 700,2300 );
   
   //servoEaser.setMinMaxMicroseconds(600,2400);
