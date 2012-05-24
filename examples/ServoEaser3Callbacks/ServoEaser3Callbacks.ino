@@ -1,5 +1,5 @@
 //
-// ServoEasingTest3.pde -- showing use of ServoEaser callbak functions
+// ServoEaser3Callbacks.ino -- showing use of ServoEaser callbak functions
 //
 //
 // 2011, TeamPneumo, Tod E. Kurt, http://todbot.com/blog/
@@ -96,12 +96,12 @@ void myArrivedFunc( int currPos, int movesIndex )
 void setup()
 {
   Serial.begin(19200);
-  Serial.println("ServoEaserTest3");
+  Serial.println("ServoEaser3Callbacks");
 
   servo1.attach( servoPin );
   servoEaser.begin( servo1, servoFrameMillis, 90);
 
-  servoEaser.useMicroSeconds(true);
+  servoEaser.useMicroseconds(true);
 
   servoEaser.setArrivedFunc( myArrivedFunc );
   servoEaser.play( myServoMoves, myServoMovesCount );

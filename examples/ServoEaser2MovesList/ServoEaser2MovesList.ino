@@ -57,7 +57,7 @@ float linearTween (float t, float b, float c, float d) {
 void setup()
 {
   Serial.begin(19200);
-  Serial.println("ServoEasingTest2");
+  Serial.println("ServoEaser2MovesList");
 
   // give pin, and min,max microseconds
   servo1.attach( servoPin, 700,2300 );
