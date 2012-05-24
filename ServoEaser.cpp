@@ -210,12 +210,12 @@ int ServoEaser::angleToMicros(float angle)
 }
 
 //
-void ServoEaser::useMicroSeconds(boolean t)
+void ServoEaser::useMicroseconds(boolean t)
 {
     useMicros = t;
 }
 //
-boolean ServoEaser::usingMicroSeconds()
+boolean ServoEaser::usingMicroseconds()
 {
     return useMicros;
 }

@@ -1,5 +1,5 @@
 //
-// ServoEaserTest2.pde -- more complex example of using ServoEaser 
+// ServoEaserTest2.pde  --more complex example of using ServoEaser 
 //                        this time with move lists
 //
 // 2011, TeamPneumo, Tod E. Kurt, http://todbot.com/blog/
@@ -18,8 +18,8 @@ Servo servo1;
 ServoEaser servoEaser;
 
 // configurable list of servo moves
-int myServoMovesCount = 9;
-ServoMove myServoMoves[] = {
+int myServoMovesCount0 = 9;
+ServoMove myServoMoves0[] = {
 // angle, duration
   { 10, 1500},
   {170, 1500},
@@ -32,6 +32,19 @@ ServoMove myServoMoves[] = {
   {135, 1000},
 };
 
+int myServoMovesCount1 = 7;
+ServoMove myServoMoves1[] = {
+// angle, duration
+  { 90,  12000},
+  { 85,  1000},
+  { 95,  1000},
+  { 80,  1000},
+  { 100, 1000},
+  { 70,  1000},
+  { 110, 1000},
+};
+int myServoMovesCount = myServoMovesCount1;
+ServoMove* myServoMoves = myServoMoves1;
 
 // our replacement easing function
 // from Easing::linearTween()
@@ -45,8 +58,13 @@ void setup()
   Serial.begin(19200);
   Serial.println("ServoEasingTest2");
 
-  servo1.attach( servoPin );
+
+  //servo1.attach( servoPin );
+  servo1.attach( servoPin, 700,2300 );
   
+  //servoEaser.setMinMaxMicroseconds(600,2400);
+  //servoEaser.useMicroSeconds(true);
+
   servoEaser.begin( servo1, servoFrameMillis, 90);
 
   // use my own easing function

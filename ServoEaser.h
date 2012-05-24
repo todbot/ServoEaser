@@ -133,9 +133,9 @@ public:
     void setMinMaxMicroseconds( int min, int max );
 
     // enable fine-grained mode by doing servo.writeMicroseconds() 
-    void useMicroSeconds(boolean t);
+    void useMicroseconds(boolean t);
 
-    boolean usingMicroSeconds();
+    boolean usingMicroseconds();
 
 };
 
