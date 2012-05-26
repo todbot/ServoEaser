@@ -11,7 +11,7 @@
 const int ledPin   = 13; 
 const int servoPin = 7;
 
-int servoFrameMillis = 10;  // minimum time between servo updates
+int servoFrameMillis = 20;  // minimum time between servo updates
 
 Servo servo1; 
 ServoEaser servoEaser;
@@ -25,11 +25,15 @@ void setup()
   // first, get the servo ready
   servo1.attach( servoPin );
 
+  Serial.println("moving to 90 degrees immediately");
   // begin with just a framerate and starting position (0 degrees)
-  servoEaser.begin( servo1, servoFrameMillis, 0 );
+  servoEaser.begin( servo1, servoFrameMillis, 90 );
 
-  // do manual easing, from 0 to 180 in 3 seconds
-  servoEaser.easeTo( 180, 3000);
+  delay(1000);
+
+  // do manual easing
+  Serial.println("moving to 20 degrees over 2 seconds");
+  servoEaser.easeTo( 20, 2000);
 }
 
 //
@@ -37,12 +41,24 @@ void loop()
 {
   servoEaser.update();
 
+  printCurrPos();
+
   if( servoEaser.hasArrived() ) { 
-    Serial.println("ServoEaser arrived at 180 degrees,");
-    Serial.println("going to 90 in 5 seconds");
-    servoEaser.easeTo( 90, 5000 );
+    Serial.println("ServoEaser arrived at 20 degrees,");
+    Serial.println("going to 160 in 2 seconds");
+    servoEaser.easeTo( 160, 2000 );
   }
     
 }
 
+void printCurrPos()
+{
+    static long nextPrintTime;
+    
+    if( (long)(millis() - nextPrintTime) >= 0 ) {
+        nextPrintTime += 100; // 100 millisecs between print statements
+        Serial.print("currPos: ");
+        Serial.println( servoEaser.getCurrPos() );
+    }
+}
 

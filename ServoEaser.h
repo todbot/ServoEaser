@@ -107,6 +107,9 @@ public:
     // for manual movement of the servo (non moves list)
     void easeTo( int pos, int durMillis );
 
+    // get current position in degrees
+    float getCurrPos();
+    
     // call this periodically in loop()
     void update();
 

@@ -18,20 +18,24 @@
 
 // FIXME: this debug setup sucks
 #if (DEBUG > 0)
-#define debug_update() {\
+#define debug_update() { \
         Serial.print("update: currPos:"); Serial.print(currPos);        \
         Serial.print(" startPos:"); Serial.print(startPos);             \
         Serial.print(" changePos:"); Serial.print(changePos);           \
         Serial.print(" tick:"); Serial.print(tick);                     \
         Serial.print(" arrived:");Serial.println(((arrived)?"true":"false"));}
-#define debug_getnextpos() {                                            \
+#define debug_getnextpos() { \
         Serial.print("getNextPos:"); Serial.print(movesIndex); \
         Serial.print(" changePos:"); Serial.print(changePos);     \
         Serial.print(" moves[i].pos:"); Serial.print(moves[movesIndex].pos); \
-        Serial.print(" durMillis:"); Serial.println(durMillis);
-#define debug_reset() {                                     \
+        Serial.print(" durMillis:"); Serial.print(durMillis); \
+        Serial.print(" tickCount:"); Serial.println(tickCount); }
+#define debug_reset() { \
         Serial.print("reset: currPos:"); Serial.print(currPos); \
-        Serial.print(" changePos:"); Serial.println(changePos); }
+        Serial.print(" changePos:"); Serial.print(changePos); \
+        Serial.print(" durMillis:"); Serial.print(durMillis); \
+        Serial.print(" movesIndex:"); Serial.print(movesIndex); \
+        Serial.print(" tickCount:"); Serial.println(tickCount); }
 #else
 #define debug_update() {}
 #define debug_getnextpos() {}
@@ -62,7 +66,9 @@ void ServoEaser::begin(Servo s, int frameTime, int pos )
     servo = s;
     frameMillis = frameTime;
     startPos = pos;
+    currPos = pos;
     flipped = false;
+    arrived = true;
 
     easingFunc = ServoEaser_easeInOutCubic;
     arrivedFunc = NULL;
@@ -70,17 +76,17 @@ void ServoEaser::begin(Servo s, int frameTime, int pos )
     useMicros = false;
 
     movesIndex = 0;
+    
+    reset();
 
     //servo.write( pos );  // FIXME: maybe remove this, too jarring
-
-    reset();
+    //easeTo( pos, frameTime*10);
 }
 
 // reset easer to initial conditions, does not nuke easingFunc or arrivedFunc
 void ServoEaser::reset()
 {
     currPos = servo.read();
-
     startPos = currPos;  // get everyone in sync
     changePos = 0;       // might be overwritten below
 
@@ -88,7 +94,7 @@ void ServoEaser::reset()
         changePos = moves[ movesIndex ].pos - startPos ;
         durMillis = moves[ movesIndex ].dur;
     }
-    
+
     tickCount = durMillis / frameMillis;
     tick = 0;
     
@@ -103,7 +109,7 @@ void ServoEaser::play( ServoMove* mlist, int mcount)
 //
 void ServoEaser::play( ServoMove* mlist, int mcount, int mreps )
 {
-    play( moves, mcount, mreps, 0 );
+    play( mlist, mcount, mreps, 0 );
 }
 
 void ServoEaser::play( ServoMove* mlist, int mcount, int mreps, int mindex)
@@ -111,9 +117,11 @@ void ServoEaser::play( ServoMove* mlist, int mcount, int mreps, int mindex)
     moves = mlist;
     movesCount = (mcount>0) ? mcount : 0;
     movesReps  = (mreps>0)  ? mreps  : 0;
-    movesIndex = (mindex>0) ? ((mindex<mcount) ? mindex : mcount) : 0; 
+    movesIndex = (mindex>0) ? mindex : 0;
+    //movesIndex = (mindex>0) ? ((mindex<mcount) ? mindex : mcount) : 0; 
 
     running = true;
+    arrived = false;
 
     reset();
 }
@@ -156,11 +164,11 @@ void ServoEaser::getNextPos()
     changePos = moves[ movesIndex ].pos - startPos ;
     durMillis = moves[ movesIndex ].dur;
 
-    debug_getnextpos();
-
     tickCount = durMillis / frameMillis;
     tick = 0;
     arrived = false;
+
+    debug_getnextpos();
 }
 
 // call this regularly in loop()
@@ -192,6 +200,7 @@ void ServoEaser::setMinMaxMicroseconds(int mi, int ma)
 {
     min = mi;
     max = ma;
+    useMicros = true;
 }
 
 // from Servo.cpp
@@ -248,6 +257,10 @@ boolean ServoEaser::hasArrived()
     return arrived;
 }
 
+float ServoEaser::getCurrPos()
+{
+    return currPos;
+}
 
 // 
 void ServoEaser::setEasingFunc( EasingFunc func )

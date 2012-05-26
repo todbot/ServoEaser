@@ -17,13 +17,15 @@ int servoFrameMillis = 20;  // minimum time between servo updates
 Servo servo1; 
 ServoEaser servoEaser;
 
-int myServoMovesCount = 2;
+int myServoMovesCount = 3;
 ServoMove myServoMoves[] = {
 // angle, duration
-  { 45, 2000},
-  {135, 2000},
+  { 90, 1000},
+  { 45, 1000},
+  {135, 1000},
 };
 
+// a bunch of different easingFunc examples
 
 // from Easing::linearTween()
 float linearTween (float t, float b, float c, float d) {
@@ -63,6 +65,7 @@ float easeOutBounce (float t, float b, float c, float d) {
 }
 
 
+int easingFuncCount = 6;
 EasingFunc easingFuncs[] = { 
     linearTween, 
     easeInOutCubic, 
@@ -71,7 +74,14 @@ EasingFunc easingFuncs[] = {
     easeInOutQuint, 
     easeOutBounce, 
 };
-int easingFuncCount = 6;
+char* easingFuncNames[] = {
+    "linearTween",
+    "easeInOutCubic", 
+    "easeInOutQuad", 
+    "easeInOutQuart", 
+    "easeInOutQuint", 
+    "easeOutBounce", 
+};
 
 int i = 0;
 
@@ -82,9 +92,9 @@ void myArrivedFunc( int currPos, int movesIndex )
   Serial.print(currPos);
   Serial.print(", movesIndex=");
   Serial.print(movesIndex);
-  if( movesIndex == 0 ) {
-    Serial.print("  switching to func #");
-    Serial.print(i);
+  if( movesIndex == 0 ) { // begining of loop
+    Serial.print("  switching to easing func: ");
+    Serial.print( easingFuncNames[i] );
     servoEaser.setEasingFunc( easingFuncs[i] );
     i++;
     if( i == easingFuncCount ) i = 0;
@@ -100,7 +110,6 @@ void setup()
 
   servo1.attach( servoPin );
   servoEaser.begin( servo1, servoFrameMillis, 90);
-
   servoEaser.useMicroseconds(true);
 
   servoEaser.setArrivedFunc( myArrivedFunc );

@@ -12,7 +12,7 @@
 const int ledPin   = 13; 
 const int servoPin = 7;
 
-int servoFrameMillis = 10;  // minimum time between servo updates
+int servoFrameMillis = 20;  // minimum time between servo updates
 
 Servo servo1; 
 ServoEaser servoEaser;
@@ -27,12 +27,8 @@ void setup()
 
   servo1.attach( servoPin );
 
-  servoEaser.begin( servo1, servoFrameMillis, 0 );
+  servoEaser.begin( servo1, servoFrameMillis, 90 );
   servoEaser.useMicroseconds( true );  // fine-control mode
-
-  // can do manual easing instead of a moves list
-  //                angle, duration 
-  servoEaser.easeTo( 180, 5000);
 
 }
 

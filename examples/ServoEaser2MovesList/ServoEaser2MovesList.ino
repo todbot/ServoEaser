@@ -44,14 +44,8 @@ ServoMove myServoMoves1[] = {
 };
 
 // pick which list you want here
-int myServoMovesCount = myServoMovesCount1;
-ServoMove* myServoMoves = myServoMoves1;
-
-// our replacement easing function
-// from Easing::linearTween()
-float linearTween (float t, float b, float c, float d) {
-	return c*t/d + b;
-}
+int myServoMovesCount = myServoMovesCount0;
+ServoMove* myServoMoves = myServoMoves0;
 
 //
 void setup()
@@ -60,15 +54,9 @@ void setup()
   Serial.println("ServoEaser2MovesList");
 
   // give pin, and min,max microseconds
-  servo1.attach( servoPin, 700,2300 );
-  
-  //servoEaser.setMinMaxMicroseconds(600,2400);
-  //servoEaser.useMicroSeconds(true);
-
+  servo1.attach( servoPin ); //, 700,2300 );  // maybe give min/max here too?
   servoEaser.begin( servo1, servoFrameMillis, 90);
-
-  // use my own easing function
-  servoEaser.setEasingFunc( linearTween );
+  servoEaser.setMinMaxMicroseconds(700,2300);
 
   // start playing a moves list on a particular servo
   servoEaser.play( myServoMoves, myServoMovesCount );

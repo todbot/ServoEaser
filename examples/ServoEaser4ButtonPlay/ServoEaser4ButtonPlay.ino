@@ -10,25 +10,20 @@
 
 const int ledPin   = 13; 
 const int servoPin  = 7;
-const int buttonPin = 0;
+const int buttonPin = 2;
 
 int servoFrameMillis = 20;  // minimum time between servo updates
 
 Servo servo1; 
 ServoEaser servoEaser;
 
-int myServoMovesCount = 8;
+int myServoMovesCount = 3;
 // configurable list of servo moves
 ServoMove myServoMoves[] = {
 // angle, duration
-    {90,   800},
-    {10,  1501},
-    {45,   502},
-    {20,   503},
-    {135, 1000},
-    {75,  1000},
-    {105, 1000},
-    {0,   3000},
+    {45,   500},
+    {135,  500},
+    {90,  1000},
 };
 
 
@@ -41,7 +36,8 @@ void setup()
   pinMode( buttonPin, INPUT_PULLUP); // turn on internal pullup resistor
 
   servo1.attach( servoPin );
-  servoEaser.begin( servo1, servoFrameMillis, 2 );
+  servoEaser.begin( servo1, servoFrameMillis, 90 );
+  //servoEaser.easeTo(90);
 
   Serial.println("waiting for button press.");
 }
@@ -53,12 +49,10 @@ void loop()
 
   // on button press, play moves once
   if( digitalRead(buttonPin) == LOW   // button press
-      //&& !servoEaser.isRunning()   // to trigger only if not running
-      ) {
+  //   && !servoEaser.isRunning()   // to trigger only if not running
+  ) {
       Serial.println("playing servo moves...");
       servoEaser.play( myServoMoves, myServoMovesCount, 1 );
   }
 
 }
-
-
