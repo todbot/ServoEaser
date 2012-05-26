@@ -92,7 +92,8 @@ private:
 public:
     
     // set up a servoeaser to use a particular servo
-    void begin(Servo s, int frameTime, int startPos);
+    //void begin(Servo s, int frameTime, int startPos);
+    void begin(Servo s, int frameTime); //, int startPos);
     void begin(Servo s, int frameTime, ServoMove* moves, int movesCount);
 
     void reset();

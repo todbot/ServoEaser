@@ -36,8 +36,7 @@ void setup()
   pinMode( buttonPin, INPUT_PULLUP); // turn on internal pullup resistor
 
   servo1.attach( servoPin );
-  servoEaser.begin( servo1, servoFrameMillis, 90 );
-  //servoEaser.easeTo(90);
+  servoEaser.begin( servo1, servoFrameMillis);
 
   Serial.println("waiting for button press.");
 }

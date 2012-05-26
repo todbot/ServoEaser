@@ -109,7 +109,7 @@ void setup()
   Serial.println("ServoEaser3Callbacks");
 
   servo1.attach( servoPin );
-  servoEaser.begin( servo1, servoFrameMillis, 90);
+  servoEaser.begin( servo1, servoFrameMillis);
   servoEaser.useMicroseconds(true);
 
   servoEaser.setArrivedFunc( myArrivedFunc );

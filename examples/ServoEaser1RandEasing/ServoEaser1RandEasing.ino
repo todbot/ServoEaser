@@ -27,8 +27,10 @@ void setup()
 
   servo1.attach( servoPin );
 
-  servoEaser.begin( servo1, servoFrameMillis, 90 );
+  servoEaser.begin( servo1, servoFrameMillis);
   servoEaser.useMicroseconds( true );  // fine-control mode
+
+  servoEaser.easeTo( 90, 5000);
 
 }
 

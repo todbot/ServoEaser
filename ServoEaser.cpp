@@ -56,17 +56,16 @@ inline float ServoEaser_easeInOutCubic(float t, float b, float c, float d)
 void ServoEaser::begin(Servo s, int frameTime, 
                        ServoMove* mlist, int mcount)
 {
-    begin( s, frameTime, servo.read() );
+    begin( s, frameTime ); //, servo.read() );
     play( mlist, mcount );
 }
 
 // set up an easer with just a servo and a starting position
-void ServoEaser::begin(Servo s, int frameTime, int pos )
+void ServoEaser::begin(Servo s, int frameTime)
 {
     servo = s;
     frameMillis = frameTime;
-    startPos = pos;
-    currPos = pos;
+
     flipped = false;
     arrived = true;
 
@@ -79,8 +78,6 @@ void ServoEaser::begin(Servo s, int frameTime, int pos )
     
     reset();
 
-    //servo.write( pos );  // FIXME: maybe remove this, too jarring
-    //easeTo( pos, frameTime*10);
 }
 
 // reset easer to initial conditions, does not nuke easingFunc or arrivedFunc

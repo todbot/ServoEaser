@@ -25,11 +25,9 @@ void setup()
   // first, get the servo ready
   servo1.attach( servoPin );
 
-  Serial.println("moving to 90 degrees immediately");
-  // begin with just a framerate and starting position (0 degrees)
-  servoEaser.begin( servo1, servoFrameMillis, 90 );
-
-  delay(1000);
+  //Serial.println("moving to 90 degrees immediately");
+  // begin with a framerate, no starting position, we don't know
+  servoEaser.begin( servo1, servoFrameMillis ); 
 
   // do manual easing
   Serial.println("moving to 20 degrees over 2 seconds");
@@ -56,7 +54,7 @@ void printCurrPos()
     static long nextPrintTime;
     
     if( (long)(millis() - nextPrintTime) >= 0 ) {
-        nextPrintTime += 100; // 100 millisecs between print statements
+        nextPrintTime += 200; // 100 millisecs between print statements
         Serial.print("currPos: ");
         Serial.println( servoEaser.getCurrPos() );
     }

@@ -22,7 +22,6 @@ Servo servo2;
 ServoEaser servo1Easer;
 ServoEaser servo2Easer;
 
-
 int myServoMovesCount = 8;
 // configurable list of servo moves
 ServoMove myServoMoves[] = {
@@ -40,16 +39,6 @@ ServoMove myServoMoves[] = {
 // flag to let us communicate between main loop and buttonCheck callback
 boolean buttonPressed = false;
 
-// on button press, bring in 2nd servo in sync with first
-void buttonCheck( int currPos, int mIndex ) 
-{
-    if( buttonPressed ) {
-        Serial.print("button pressed at "); Serial.println( mIndex );
-        servo2Easer.play( myServoMoves, myServoMovesCount, 0, mIndex+1 );
-        buttonPressed = false;
-    }
-}
-
 //
 void setup()
 {
@@ -59,16 +48,25 @@ void setup()
   servo1.attach( servo1Pin );
   servo2.attach( servo2Pin );
 
-  servo1Easer.begin( servo1, servoFrameMillis, 90 );
-  servo2Easer.begin( servo2, servoFrameMillis, 90 );
+  servo1Easer.begin( servo1, servoFrameMillis );
+  servo2Easer.begin( servo2, servoFrameMillis );
   servo2Easer.setFlipped( true );
 
   pinMode( buttonPin, INPUT_PULLUP); // turn on internal pullup resistor
 
   servo1Easer.play( myServoMoves, myServoMovesCount );
-  //servo2Easer.play( myServoMoves, myServoMovesCount );
 
   servo1Easer.setArrivedFunc( buttonCheck );
+}
+
+// on button press, bring in 2nd servo in sync with first
+void buttonCheck( int currPos, int mIndex ) 
+{
+    if( buttonPressed ) {
+        Serial.print("button pressed at "); Serial.println( mIndex );
+        servo2Easer.play( myServoMoves, myServoMovesCount, 0, mIndex+1 );
+        buttonPressed = false;
+    }
 }
 
 //

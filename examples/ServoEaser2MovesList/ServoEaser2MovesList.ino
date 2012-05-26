@@ -55,7 +55,7 @@ void setup()
 
   // give pin, and min,max microseconds
   servo1.attach( servoPin ); //, 700,2300 );  // maybe give min/max here too?
-  servoEaser.begin( servo1, servoFrameMillis, 90);
+  servoEaser.begin( servo1, servoFrameMillis );
   servoEaser.setMinMaxMicroseconds(700,2300);
 
   // start playing a moves list on a particular servo
