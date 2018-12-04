@@ -163,7 +163,7 @@ void ServoEaser::getNextPos()
 
     tickCount = durMillis / frameMillis;
     tick = 0;
-    arrived = false;
+    arrived = !running;
 
     debug_getnextpos();
 }
