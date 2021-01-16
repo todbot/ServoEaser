@@ -57,7 +57,7 @@ typedef void (*ArrivedFunc)(int currPos, int movesIndex);
 class ServoEaser 
 {
 private:
-    Servo servo;      // what servo we're operating on
+    Servo *servo;      // what servo we're operating on
     int frameMillis;  // minimum update time between servo moves
     float startPos;   // where servo started its tween
     float currPos;    // current servo position, best of our knowledge
@@ -93,8 +93,8 @@ public:
     
     // set up a servoeaser to use a particular servo
     //void begin(Servo s, int frameTime, int startPos);
-    void begin(Servo s, int frameTime); //, int startPos);
-    void begin(Servo s, int frameTime, ServoMove* moves, int movesCount);
+    void begin(Servo& s, int frameTime); //, int startPos);
+    void begin(Servo& s, int frameTime, ServoMove* moves, int movesCount);
 
     void reset();
     
