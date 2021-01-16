@@ -53,7 +53,7 @@ inline float ServoEaser_easeInOutCubic(float t, float b, float c, float d)
 }
 
 // set up an easer with a servo and a moves list
-void ServoEaser::begin(Servo s, int frameTime, 
+void ServoEaser::begin(Servo& s, int frameTime, 
                        ServoMove* mlist, int mcount)
 {
     begin( s, frameTime ); //, servo.read() );
@@ -61,9 +61,9 @@ void ServoEaser::begin(Servo s, int frameTime,
 }
 
 // set up an easer with just a servo and a starting position
-void ServoEaser::begin(Servo s, int frameTime)
+void ServoEaser::begin(Servo& s, int frameTime)
 {
-    servo = s;
+    servo = &s;
     frameMillis = frameTime;
 
     flipped = false;
@@ -83,7 +83,10 @@ void ServoEaser::begin(Servo s, int frameTime)
 // reset easer to initial conditions, does not nuke easingFunc or arrivedFunc
 void ServoEaser::reset()
 {
-    currPos = servo.read();
+    if (servo)
+    {
+        currPos = servo->read();
+    }
     startPos = currPos;  // get everyone in sync
     changePos = 0;       // might be overwritten below
 
@@ -185,10 +188,12 @@ void ServoEaser::update()
         getNextPos(); 
     }
     float p = (flipped) ? 180.0 - currPos : currPos;
-    if( useMicros ) {
-        servo.writeMicroseconds( angleToMicros(p) );
-    } else {
-        servo.write( p );
+    if ( servo )  {
+        if( useMicros ) {
+            servo->writeMicroseconds( angleToMicros(p) );
+        } else {
+            servo->write( p );
+        }
     }
 }
 
