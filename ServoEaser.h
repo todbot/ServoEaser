@@ -64,9 +64,9 @@ private:
 
     float changePos;  // from servoMove list
 
-    int durMillis;    // from servoMove list
-    int tick;         // count of easing moves within move duration 
-    int tickCount;    // number of frames between start & end pos
+    unsigned long durMillis;    // from servoMove list
+    unsigned long startMillis; // time when we started
+
     unsigned long lastMillis; // time time we did something
 
     ServoMove* moves; // list of user-supplied servo moves
