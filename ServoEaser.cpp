@@ -239,7 +239,11 @@ boolean ServoEaser::isFlipped()
 //
 void ServoEaser::start()
 {
-    running = true;
+    if (!running)
+    {
+        startMillis += millis()-lastMillis;        
+        running = true;
+    }
 }
 //
 void ServoEaser::stop()
