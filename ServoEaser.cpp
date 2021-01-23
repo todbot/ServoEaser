@@ -22,20 +22,20 @@
         Serial.print("update: currPos:"); Serial.print(currPos);        \
         Serial.print(" startPos:"); Serial.print(startPos);             \
         Serial.print(" changePos:"); Serial.print(changePos);           \
-        Serial.print(" tick:"); Serial.print(tick);                     \
+        Serial.print(" startMillis:"); Serial.print(startMillis);                     \
         Serial.print(" arrived:");Serial.println(((arrived)?"true":"false"));}
 #define debug_getnextpos() { \
         Serial.print("getNextPos:"); Serial.print(movesIndex); \
         Serial.print(" changePos:"); Serial.print(changePos);     \
         Serial.print(" moves[i].pos:"); Serial.print(moves[movesIndex].pos); \
         Serial.print(" durMillis:"); Serial.print(durMillis); \
-        Serial.print(" tickCount:"); Serial.println(tickCount); }
+        Serial.print(" startMillis:"); Serial.println(startMillis); }
 #define debug_reset() { \
         Serial.print("reset: currPos:"); Serial.print(currPos); \
         Serial.print(" changePos:"); Serial.print(changePos); \
         Serial.print(" durMillis:"); Serial.print(durMillis); \
         Serial.print(" movesIndex:"); Serial.print(movesIndex); \
-        Serial.print(" tickCount:"); Serial.println(tickCount); }
+        Serial.print(" startMillis:"); Serial.println(startMillis); }
 #else
 #define debug_update() {}
 #define debug_getnextpos() {}
@@ -95,8 +95,7 @@ void ServoEaser::reset()
         durMillis = moves[ movesIndex ].dur;
     }
 
-    tickCount = durMillis / frameMillis;
-    tick = 0;
+    startMillis = millis();
     
     debug_reset();
 }
@@ -133,8 +132,7 @@ void ServoEaser::easeTo( int pos, int dur )
     startPos = currPos;
     changePos = pos - startPos;
     durMillis = dur;
-    tickCount = durMillis / frameMillis;
-    tick = 0;
+    startMillis = millis();
     arrived = false;
     running = true;
 }
@@ -142,6 +140,8 @@ void ServoEaser::easeTo( int pos, int dur )
 // used internally to select next servo position
 void ServoEaser::getNextPos()
 {
+    unsigned long oldEndMillis = startMillis + durMillis;
+
     arrived = true;
     if( arrivedFunc != NULL ) { arrivedFunc( currPos, movesIndex ); }
 
@@ -164,8 +164,7 @@ void ServoEaser::getNextPos()
     changePos = moves[ movesIndex ].pos - startPos ;
     durMillis = moves[ movesIndex ].dur;
 
-    tickCount = durMillis / frameMillis;
-    tick = 0;
+    startMillis = oldEndMillis;
     arrived = false;
 
     debug_getnextpos();
@@ -174,19 +173,23 @@ void ServoEaser::getNextPos()
 // call this regularly in loop()
 void ServoEaser::update()
 {
-    if( ((millis() - lastMillis) < frameMillis) || !running ) {  // time yet?
+    unsigned long currentMillis = millis();
+
+    if( ((currentMillis - lastMillis) < frameMillis) || !running ) {  // time yet?
         return;
     }
-    lastMillis = millis();
+    lastMillis = currentMillis;
 
-    currPos = easingFunc( tick, startPos, changePos, tickCount );
-    
-    debug_update();
-
-    if( !arrived ) tick++;
-    if( tick == tickCount ) { // time for new position
+    if (currentMillis > (startMillis + durMillis)) {  
+        currPos = startPos + changePos; 
         getNextPos(); 
     }
+    else {
+        currPos = easingFunc( currentMillis - startMillis, startPos, changePos, durMillis );
+    }
+	
+    debug_update();
+
     float p = (flipped) ? 180.0 - currPos : currPos;
     if ( servo )  {
         if( useMicros ) {
@@ -241,7 +244,11 @@ boolean ServoEaser::isFlipped()
 //
 void ServoEaser::start()
 {
-    running = true;
+    if (!running)
+    {
+        startMillis += millis()-lastMillis;        
+        running = true;
+    }
 }
 //
 void ServoEaser::stop()
