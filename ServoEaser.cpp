@@ -180,7 +180,7 @@ void ServoEaser::update()
     }
     lastMillis = currentMillis;
 
-    if (currentMillis > (startMillis + durMillis)) {  
+    if (currentMillis >= (startMillis + durMillis)) {  
         currPos = startPos + changePos; 
         getNextPos(); 
     }
